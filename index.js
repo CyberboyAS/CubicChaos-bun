@@ -33,11 +33,11 @@ const express = require('express');
 const app = express();
 const ws = require('ws');
 
-app.use(express.static(__dirname + "/../client/"));
+app.use(express.static(__dirname + "/client/"));
 //console.log(__dirname);
 
 app.get('/',(req,res) => {
-    res.sendFile(path.join(__dirname,"/../client/index.html"));
+    res.sendFile(path.join(__dirname,"/client/index.html"));
 });
 
 const server = app.listen(8090);
