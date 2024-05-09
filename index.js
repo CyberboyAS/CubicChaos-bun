@@ -80,14 +80,14 @@ wss.on('listening',()=>{
 wss.on('connection',function connection(ws){
     
     //This script is called immediately when the connection with the client is made
-    console.log('a player has connected!');
+   //console.log('a player has connected!');
     //We store the socket and associate it to an id (that will be reused to link the client and the player object)
     sockets[socketNextId] = ws;
     const ownClientId = socketNextId;
     let ownGameId = "";
     socketNextId++;
-    console.log("UPDATED SOCKETS:");
-    console.log(sockets);
+   //console.log("UPDATED SOCKETS:");
+   //console.log(sockets);
 
     ws.on('message',(data)=>{
 
@@ -97,7 +97,7 @@ wss.on('connection',function connection(ws){
             var jsonData = JSON.parse(data);
         }
         catch (err){
-            console.error(err);
+           //console.error(err);
             //But just in case, we can imagine giving info without them
             isJson = false;
         }
@@ -106,8 +106,8 @@ wss.on('connection',function connection(ws){
             //console.log("OUI: Le message reçu par le client est un JSON");
             
             if(jsonData.wsTitle == "findOrCreateGame"){
-                console.log("Client asks to find or create a game (and be part of it)...");
-                console.log(games);
+               //console.log("Client asks to find or create a game (and be part of it)...");
+               //console.log(games);
                 //Variable to know if there is an available game
                 let aux = false;
                 let attributedCharacter = "1";
@@ -119,11 +119,11 @@ wss.on('connection',function connection(ws){
                 games.forEach((game) => {
                     if(game.levelId == jsonData.levelId){
                         if(("idPlayer1" in game) && ("idPlayer2" in game) && ("idPlayer3" in game)){
-                            console.log(`Game[${game.id}] already full`);
+                           //console.log(`Game[${game.id}] already full`);
                         }else{
 
                             //If the game is joinable
-                            console.log(`Adding player to game[${game.id}]`);
+                           //console.log(`Adding player to game[${game.id}]`);
 
                             //We enter the client id in an unused property of the game
                             if(!("idPlayer1" in game)){
@@ -143,15 +143,15 @@ wss.on('connection',function connection(ws){
                             //We can remember that the player has been added, so shouldn't create new game later!
                             aux = true;
 
-                            console.log("Est-ce que le lobby est complet ?");
+                           //console.log("Est-ce que le lobby est complet ?");
                             if(("idPlayer1" in game) && ("idPlayer2" in game) && ("idPlayer3" in game)){
-                                console.log("OUI");
+                               //console.log("OUI");
                                 //Then we should tell everyone in the game that it can start
                                 //(using the concerned stored sockets that we recognize with their key)
                                 for(const [key, socket] of Object.entries(sockets)){
                                     if((key==game.idPlayer1) || (key==game.idPlayer2) || (key==game.idPlayer3)){
                                         
-                                        console.log(`Sending startLevel to socket[${key}]`);
+                                       //console.log(`Sending startLevel to socket[${key}]`);
 
                                         let jsonResponse = {};
                                         jsonResponse.wsTitle = "startLevel";
@@ -162,11 +162,11 @@ wss.on('connection',function connection(ws){
                                     }
                                 }
                             }else{
-                                console.log("NON");
+                               //console.log("NON");
                             }
 
                             //Anyway, the client has been attributed a game in this case
-                            console.log("about to return...");
+                           //console.log("about to return...");
                             return;
 
                         }
@@ -174,7 +174,7 @@ wss.on('connection',function connection(ws){
                 });
 
                 
-                console.log(games);
+               //console.log(games);
                 //If there was no available game
                 if(aux == false){
                     //Create a game
@@ -258,7 +258,7 @@ wss.on('connection',function connection(ws){
                 }
                 players.push(newPlayer);
 
-                console.log(games);
+               //console.log(games);
 
                 
                 let jsonResponse = {};
@@ -269,10 +269,10 @@ wss.on('connection',function connection(ws){
                 ws.send(JSON.stringify(jsonResponse));
                 
                 //On enverra ces données quand les joueurs le demanderont au start du level
-                console.log(players);
+               //console.log(players);
 
-                console.log("ownClientId = "+ownClientId);
-                console.log("ownGameId = "+ownGameId);
+               //console.log("ownClientId = "+ownClientId);
+               //console.log("ownGameId = "+ownGameId);
                 
             }else if(jsonData.wsTitle == "selfPlayerPos"){
                 //console.log("Player position received...");
@@ -293,10 +293,10 @@ wss.on('connection',function connection(ws){
 
                                 //console.log(`Player[${player.id}] found`);
                                 /*
-                                console.log(`player.posX : ${player.posX}`);
-                                console.log(`player.posY : ${player.posY}`);
-                                console.log(`jsonData.posX : ${jsonData.posX}`);
-                                console.log(`jsonData.posY : ${jsonData.posY}`);
+                               //console.log(`player.posX : ${player.posX}`);
+                               //console.log(`player.posY : ${player.posY}`);
+                               //console.log(`jsonData.posX : ${jsonData.posX}`);
+                               //console.log(`jsonData.posY : ${jsonData.posY}`);
                                 */
                                 player.posX=jsonData.posX;
                                 player.posY=jsonData.posY;
@@ -341,7 +341,7 @@ wss.on('connection',function connection(ws){
                 //Initially, there were multiple optional stars to get
                 //But imagine that stars==1 means possible to end game
 
-                console.log("> player go key in game "+ownGameId);
+               //console.log("> player go key in game "+ownGameId);
                 
                 games.forEach((game) => {
                     if(game.id==ownGameId){
@@ -353,7 +353,7 @@ wss.on('connection',function connection(ws){
                 
                 //A player met the end of the level (ending door)
 
-                console.log("> playerArrived");
+               //console.log("> playerArrived");
                 
                 for(let i=0;i<players.length;i++){
                     if(players[i].id==jsonData.selfPlayerId){
@@ -374,12 +374,12 @@ wss.on('connection',function connection(ws){
                         
                         //Now let's see if we should tell e veryone that it is the end...
 
-                        console.log("Est-ce que la game doit se terminer ?");
+                       //console.log("Est-ce que la game doit se terminer ?");
                         if(games[i].arrivalsToGo<=0){
 
                             //We should stop the connection and display the interface to get back to menu
                             
-                            console.log("Let's end the game");
+                           //console.log("Let's end the game");
 
                             //MULTICAST --> endGame
                             //Le serveur détecte si la game est terminée ou non
@@ -417,7 +417,7 @@ wss.on('connection',function connection(ws){
                 //Okay someone decided to come back after getting to the door
                 //Useful because if a player is stuck alone and needs someone to end the game...
 
-                console.log("> playerNotArrived");
+               //console.log("> playerNotArrived");
 
                 for(let i=0;i<players.length;i++){
                     if(players[i].id==jsonData.selfPlayerId){
@@ -432,7 +432,7 @@ wss.on('connection',function connection(ws){
                         //La bonne game
                         
                         games[i].arrivalsToGo += 1;
-                        console.log(games[i].arrivalsToGo);
+                       //console.log(games[i].arrivalsToGo);
 
                         break;
 
@@ -468,7 +468,7 @@ wss.on('connection',function connection(ws){
                                         jsonResponse.activated = buttons[i].activated;
                                         
                                         value.send(JSON.stringify(jsonResponse));
-                                        console.log(jsonResponse);
+                                       //console.log(jsonResponse);
                                     }
                                 }
 
@@ -501,8 +501,8 @@ wss.on('connection',function connection(ws){
                                         jsonResponse.wsTitle = "updateButton";
                                         jsonResponse.buttonName = jsonData.buttonName;
                                         jsonResponse.activated = buttons[i].activated;
-                                        console.log(jsonData);
-                                        console.log(jsonResponse);
+                                       //console.log(jsonData);
+                                       //console.log(jsonResponse);
                                         value.send(JSON.stringify(jsonResponse));
 
                                     }
@@ -521,7 +521,7 @@ wss.on('connection',function connection(ws){
                 //Transmits an order to play a sound effect or stop it or anything
                 //To the whole playing team
 
-                console.log(jsonData);
+               //console.log(jsonData);
 
                 for(let j=0;j<games.length;j++){
                     if(games[j].id==ownGameId){
@@ -563,7 +563,7 @@ wss.on('connection',function connection(ws){
             }
 
         }else{
-            console.log("NON: Le message reçu par le client n'est PAS au format JSON");
+           //console.log("NON: Le message reçu par le client n'est PAS au format JSON");
             
             let jsonData = `{
                 "wsTitle": "default",
@@ -578,7 +578,7 @@ wss.on('connection',function connection(ws){
     });
 
     ws.on('close',()=>{
-        console.log('a player has disconnected...');
+       //console.log('a player has disconnected...');
 
         //Also, make all players playing in the same game find another game.
 
@@ -587,7 +587,7 @@ wss.on('connection',function connection(ws){
             //console.log(key, value);
             //sockets.splice(key,1);
             if(value==ws){
-                console.log(`Disconnecting socket${key}`);
+               //console.log(`Disconnecting socket${key}`);
                 delete sockets[key];
                 let toBeDeletedKey = -1;
                 
@@ -616,7 +616,7 @@ wss.on('connection',function connection(ws){
                                 value2.send(JSON.stringify(jsonResponse));
                             }
 
-                            console.log("TRUCC");
+                           //console.log("TRUCC");
 
                             if(games[i].idPlayer1==key){
                                 delete games[i].idPlayer1;
@@ -637,8 +637,8 @@ wss.on('connection',function connection(ws){
                         }
                         let aux = 0;
                         for(let j=0;j<toBeDeletedPlayerKeys.length;j++){
-                            console.log("player to delete :")
-                            console.log(players[j]);
+                           //console.log("player to delete :")
+                           //console.log(players[j]);
                             players.splice(toBeDeletedPlayerKeys[j - aux],1);
                             aux++;
                         }
@@ -657,9 +657,9 @@ wss.on('connection',function connection(ws){
                     games.splice(toBeDeletedKey,1);
                 }
                 
-                console.log("FIN DES SUPPRESSIONS :");
-                console.log(players);
-                console.log(games);
+               //console.log("FIN DES SUPPRESSIONS :");
+               //console.log(players);
+               //console.log(games);
                 
 
             }
