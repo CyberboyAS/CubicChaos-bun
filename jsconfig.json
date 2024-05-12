@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     // Enable latest features
-<<<<<<< HEAD
-    "lib": ["ESNext", "DOM"],
-=======
     "lib": ["ESNext"],
->>>>>>> a9f7804 (complete code with bun and ipv6)
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
